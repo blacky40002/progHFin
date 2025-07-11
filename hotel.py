@@ -61,9 +61,8 @@ class Hotel:
         if numero_stanza not in self.stanze:
             raise KeyError(f"La stanza {numero_stanza} non esiste")
         
+        # Controllo che data_arrivo sia precedente a data_partenza
         if data_arrivo >= data_partenza:
-            if data_arrivo.mese > data_partenza.mese:
-                raise ValueError("Prenotazioni a cavallo dell'anno non sono ammesse")
             raise ValueError("La data di arrivo deve essere precedente alla data di partenza")
 
         
@@ -339,9 +338,9 @@ class Hotel:
         for pren in self.prenotazioni.values():
             if pren.numero_stanza == numero_stanza:
                 # Verifica sovrapposizione: due intervalli si sovrappongono se:
-                # data_arrivo < pren.data_partenza AND data_partenza > pren.data_arrivo
-                # Ma permettiamo prenotazioni consecutive: una può finire quando l'altra inizia
-                if data_arrivo < pren.data_partenza and data_partenza > pren.data_arrivo:
+                # data_arrivo <= pren.data_partenza AND data_partenza >= pren.data_arrivo
+                # Non permettiamo nemmeno prenotazioni consecutive che si toccano
+                if data_arrivo <= pren.data_partenza and data_partenza >= pren.data_arrivo:
                     return False
         return True
 
